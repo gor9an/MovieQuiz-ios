@@ -98,7 +98,7 @@ final class MovieQuizViewController: UIViewController {
         
         
     }
-
+    
     private func showNextQuestionOrResults() {
         if currentQuestionIndex == questions.count - 1 { // 1
             let text = "Ваш результат: \(correctAnswers)/10"
@@ -144,7 +144,7 @@ final class MovieQuizViewController: UIViewController {
         let action = UIAlertAction(title: result.buttonText, style: .default) { _ in
             self.currentQuestionIndex = 0
             self.correctAnswers = 0
-
+            
             
             let firstQuestion = self.questions[self.currentQuestionIndex]
             let viewModel = self.convert(model: firstQuestion)
@@ -165,12 +165,12 @@ struct QuizQuestion {
 
 // для состояния "Результат квиза"
 struct QuizResultsViewModel {
-  // строка с заголовком алерта
-  let title: String
-  // строка с текстом о количестве набранных очков
-  let text: String
-  // текст для кнопки алерта
-  let buttonText: String
+    // строка с заголовком алерта
+    let title: String
+    // строка с текстом о количестве набранных очков
+    let text: String
+    // текст для кнопки алерта
+    let buttonText: String
 }
 
 // вью модель для состояния "Вопрос показан"
