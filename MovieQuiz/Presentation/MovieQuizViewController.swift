@@ -66,12 +66,16 @@ final class MovieQuizViewController: UIViewController {
     
     // метод вызывается, когда пользователь нажимает на кнопку "Нет"
     @IBAction private func noButtonClicked(_ sender: Any) {
+        noButton.isEnabled = false
+        yesButton.isEnabled = false
         let currentQuestion = questions[currentQuestionIndex]
         let givenAnswer = false
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
     
     @IBAction private func yesButtonClicked(_ sender: Any) {
+        noButton.isEnabled = false
+        yesButton.isEnabled = false
         let currentQuestion = questions[currentQuestionIndex]
         let givenAnswer = true
         
@@ -83,7 +87,6 @@ final class MovieQuizViewController: UIViewController {
         imageView.layer.borderWidth = 8 // толщина рамки
         imageView.layer.cornerRadius = 20 // радиус скругления углов рамки
         
-        
         if isCorrect {
             imageView.layer.borderColor = UIColor.ypGreen.cgColor
             correctAnswers += 1
@@ -94,9 +97,10 @@ final class MovieQuizViewController: UIViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             self.showNextQuestionOrResults()
             self.imageView.layer.borderWidth = 0 // толщина рамки
+            
+            self.noButton.isEnabled = true
+            self.yesButton.isEnabled = true
         }
-        
-        
     }
     
     private func showNextQuestionOrResults() {
@@ -165,11 +169,8 @@ struct QuizQuestion {
 
 // для состояния "Результат квиза"
 struct QuizResultsViewModel {
-    // строка с заголовком алерта
     let title: String
-    // строка с текстом о количестве набранных очков
     let text: String
-    // текст для кнопки алерта
     let buttonText: String
 }
 
