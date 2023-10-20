@@ -1,6 +1,6 @@
 import UIKit
 
-final class MovieQuizViewController: UIViewController {
+final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate {
     @IBOutlet weak private var noButton: UIButton!
     @IBOutlet weak private var yesButton: UIButton!
     @IBOutlet weak private var imageView: UIImageView!
@@ -20,13 +20,11 @@ final class MovieQuizViewController: UIViewController {
         yesButton.layer.cornerRadius = 15
         imageView.layer.cornerRadius = 20
         
-        if let firstQuestion = questionFactory.requestNextQuestion() {
-            currentQuestion = firstQuestion
-            let viewModel = convert(model: firstQuestion)
-            show(quiz: viewModel)
-        }
+        questionFactory.delegate = self
+        questionFactory.requestNextQuestion()
     }
     
+    // MARK: - Actions
     // метод вызывается, когда пользователь нажимает на кнопку "Нет"
     @IBAction private func noButtonClicked(_ sender: Any) {
         noButton.isEnabled = false
@@ -50,6 +48,7 @@ final class MovieQuizViewController: UIViewController {
         showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
     
+    // MARK: - Private functions
     private func showAnswerResult(isCorrect: Bool) {
         imageView.layer.masksToBounds = true // даём разрешение на рисование рамки
         imageView.layer.borderWidth = 8 // толщина рамки
@@ -87,12 +86,7 @@ final class MovieQuizViewController: UIViewController {
         } else { // 2
             currentQuestionIndex += 1
             
-            if let nextQuestion = questionFactory.requestNextQuestion() {
-                currentQuestion = nextQuestion
-                let viewModel = convert(model: nextQuestion)
-
-                show(quiz: viewModel)
-            }
+            self.questionFactory.requestNextQuestion()
         }
     }
     
@@ -124,16 +118,26 @@ final class MovieQuizViewController: UIViewController {
             self.correctAnswers = 0
             
             
-            if let firstQuestion = self.questionFactory.requestNextQuestion() {
-                self.currentQuestion = firstQuestion
-                let viewModel = self.convert(model: firstQuestion)
-
-                self.show(quiz: viewModel)
-            }
+            questionFactory.requestNextQuestion()
         }
         
         alert.addAction(action)
         
         self.present(alert, animated: true, completion: nil)
     }
+    
+    // MARK: - QuestionFactoryDelegate
+
+    func didReceiveNextQuestion(question: QuizQuestion?) {
+        guard let question else {
+            return
+        }
+        
+        currentQuestion = question
+        let viewModel = convert(model: question)
+        DispatchQueue.main.async { [weak self] in
+                self?.show(quiz: viewModel)
+        }
+    }
+    
 }
