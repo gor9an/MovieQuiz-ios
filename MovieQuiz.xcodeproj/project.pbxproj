@@ -137,14 +137,40 @@
 			path = MovieQuizFonts;
 			sourceTree = "<group>";
 		};
-		B0F94F222AE19AB500DB2741 /* Services */ = {
+		B0B5B3622AE33F3D00875FE5 /* QuestionServices */ = {
 			isa = PBXGroup;
 			children = (
 				B0F94F232AE19B0A00DB2741 /* QuestionFactory.swift */,
 				B0B5B3552AE2CE0900875FE5 /* QuestionFactoryProtocol.swift */,
 				B0B5B3572AE307E800875FE5 /* QuestionFactoryDelegate.swift */,
+			);
+			path = QuestionServices;
+			sourceTree = "<group>";
+		};
+		B0B5B3632AE33F6F00875FE5 /* AlertServices */ = {
+			isa = PBXGroup;
+			children = (
 				B0B5B3602AE3360F00875FE5 /* AlertPresenterProtocol.swift */,
 				B0B5B35E2AE3357000875FE5 /* AlertPresenterDelegate.swift */,
+			);
+			path = AlertServices;
+			sourceTree = "<group>";
+		};
+		B0B5B3642AE33F8F00875FE5 /* QuizModels */ = {
+			isa = PBXGroup;
+			children = (
+				B0F94F262AE19E5F00DB2741 /* QuizStepViewModel.swift */,
+				B0F94F282AE19E6E00DB2741 /* QuizResultsViewModel.swift */,
+				B0F94F2A2AE19E8900DB2741 /* QuizQuestion.swift */,
+			);
+			path = QuizModels;
+			sourceTree = "<group>";
+		};
+		B0F94F222AE19AB500DB2741 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				B0B5B3632AE33F6F00875FE5 /* AlertServices */,
+				B0B5B3622AE33F3D00875FE5 /* QuestionServices */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -152,9 +178,7 @@
 		B0F94F252AE19E4400DB2741 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				B0F94F262AE19E5F00DB2741 /* QuizStepViewModel.swift */,
-				B0F94F282AE19E6E00DB2741 /* QuizResultsViewModel.swift */,
-				B0F94F2A2AE19E8900DB2741 /* QuizQuestion.swift */,
+				B0B5B3642AE33F8F00875FE5 /* QuizModels */,
 				B0B5B35B2AE3307500875FE5 /* AlertModel.swift */,
 			);
 			path = Models;
