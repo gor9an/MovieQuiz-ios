@@ -14,11 +14,10 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     private var alertPresenter: AlertPresenterProtocol = AlertPresenter()
     private var currentQuestion: QuizQuestion?
     private var statisticService: StatisticService = StatisticServiceImplementation()
+    private var accuracy: Double = UserDefaults.standard.double(forKey: "total")
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
-        print(Bundle.main.bundlePath)
-        
         super.viewDidLoad()
         noButton.layer.cornerRadius = 15
         yesButton.layer.cornerRadius = 15
@@ -80,6 +79,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     private func showNextQuestionOrResults() {
         if currentQuestionIndex == questionsAmount - 1 {
             statisticService.store(correct: correctAnswers, total: statisticService.bestGame.correct)
+            
             let text = "Вы ответили на \(correctAnswers) из \(questionsAmount)\nКоличество игр: \(statisticService.gamesCount)\nРекорд: \(statisticService.bestGame.correct) (\(statisticService.bestGame.date.dateTimeString))\nСредняя точность: \(String(format: "%.2f", statisticService.totalAccuracy))%"
             let viewModel = AlertModel(
                 title: "Этот раунд окончен!",
@@ -135,6 +135,9 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     
     // MARK: - StatisticServiceDelegate
     func didReceiveStatistic() -> Double {
-        return Double(correctAnswers)/Double(questionsAmount)*100
+        accuracy += Double(correctAnswers)/Double(questionsAmount)*100
+        UserDefaults.standard.set(accuracy, forKey: "total")
+        
+        return UserDefaults.standard.double(forKey: "total") / Double(statisticService.gamesCount)
     }
 }
