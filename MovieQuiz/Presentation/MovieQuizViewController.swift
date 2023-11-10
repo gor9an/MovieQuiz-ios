@@ -1,7 +1,6 @@
 import UIKit
 
-final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, AlertPresenterDelegate {
-    
+final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, AlertPresenterDelegate, StatisticServiceDelegate {
     @IBOutlet weak private var noButton: UIButton!
     @IBOutlet weak private var yesButton: UIButton!
     @IBOutlet weak private var imageView: UIImageView!
@@ -14,9 +13,12 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     private var questionFactory: QuestionFactoryProtocol = QuestionFactory()
     private var alertPresenter: AlertPresenterProtocol = AlertPresenter()
     private var currentQuestion: QuizQuestion?
+    private var statisticService: StatisticService = StatisticServiceImplementation()
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
+        print(Bundle.main.bundlePath)
+        
         super.viewDidLoad()
         noButton.layer.cornerRadius = 15
         yesButton.layer.cornerRadius = 15
@@ -25,6 +27,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         questionFactory.delegate = self
         alertPresenter.delegate = self
         questionFactory.requestNextQuestion()
+        statisticService.delegate = self
     }
     
     // MARK: - Actions
@@ -76,9 +79,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     
     private func showNextQuestionOrResults() {
         if currentQuestionIndex == questionsAmount - 1 {
-            let text = correctAnswers == questionsAmount ?
-                    "Поздравляем, вы ответили на 10 из 10!" :
-                    "Вы ответили на \(correctAnswers) из 10, попробуйте ещё раз!"
+            statisticService.store(correct: correctAnswers, total: statisticService.bestGame.correct)
+            let text = "Вы ответили на \(correctAnswers) из \(questionsAmount)\nКоличество игр: \(statisticService.gamesCount)\nРекорд: \(statisticService.bestGame.correct) (\(statisticService.bestGame.date.dateTimeString))\nСредняя точность: \(String(format: "%.2f", statisticService.totalAccuracy))%"
             let viewModel = AlertModel(
                 title: "Этот раунд окончен!",
                 message: text,
@@ -131,4 +133,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         questionFactory.requestNextQuestion()
     }
     
+    // MARK: - StatisticServiceDelegate
+    func didReceiveStatistic() -> Double {
+        return Double(correctAnswers)/Double(questionsAmount)*100
+    }
 }
