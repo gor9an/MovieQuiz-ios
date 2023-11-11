@@ -7,7 +7,7 @@
 
 import UIKit
 
-class AlertPresenter: UIViewController, AlertPresenterProtocol {
+final class AlertPresenter: UIViewController, AlertPresenterProtocol {
     weak var delegate: AlertPresenterDelegate?
     
     func requestAlert(quiz result: AlertModel) {

@@ -63,5 +63,4 @@ final class StatisticServiceImplementation: StatisticService {
         }
         gamesCount += 1
     }
-    
 }

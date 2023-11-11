@@ -80,7 +80,12 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         if currentQuestionIndex == questionsAmount - 1 {
             statisticService.store(correct: correctAnswers, total: statisticService.bestGame.correct)
             
-            let text = "Вы ответили на \(correctAnswers) из \(questionsAmount)\nКоличество игр: \(statisticService.gamesCount)\nРекорд: \(statisticService.bestGame.correct) (\(statisticService.bestGame.date.dateTimeString))\nСредняя точность: \(String(format: "%.2f", statisticService.totalAccuracy))%"
+            let text = """
+Вы ответили на \(correctAnswers) из \(questionsAmount)\n
+Количество игр: \(statisticService.gamesCount)\n
+Рекорд: \(statisticService.bestGame.correct) (\(statisticService.bestGame.date.dateTimeString))\n
+Средняя точность: \(String(format: "%.2f", statisticService.totalAccuracy))%
+"""
             let viewModel = AlertModel(
                 title: "Этот раунд окончен!",
                 message: text,
