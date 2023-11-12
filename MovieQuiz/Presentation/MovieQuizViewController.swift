@@ -7,6 +7,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     @IBOutlet weak private var textLabel: UILabel!
     @IBOutlet weak var counterLabel: UILabel!
     
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
     private let questionsAmount: Int = 10
@@ -113,7 +114,21 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         imageView.image = step.image
         textLabel.text = step.question
         counterLabel.text = step.questionNumber
+    }
+    
+    private func showLoadingIndicator() {
+        activityIndicator.isHidden = false // говорим, что индикатор загрузки не скрыт
+        activityIndicator.startAnimating() // включаем анимацию
+    }
+    
+    private func showNetworkError(message: String) {
+        hideLoadingIndicator() // скрываем индикатор загрузки
         
+        let errorAlert = AlertModel(
+            title: "Ошибка",
+            message: "Данные из сети не загружены",
+            buttonText: "Попробовать ещё раз")
+        alertPresenter.requestAlert(quiz: errorAlert)
     }
     
     // MARK: - QuestionFactoryDelegate
