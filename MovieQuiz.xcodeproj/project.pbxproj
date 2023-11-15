@@ -29,6 +29,8 @@
 		B0B5B35C2AE3307500875FE5 /* AlertModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B5B35B2AE3307500875FE5 /* AlertModel.swift */; };
 		B0B5B35F2AE3357000875FE5 /* AlertPresenterDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B5B35E2AE3357000875FE5 /* AlertPresenterDelegate.swift */; };
 		B0B5B3612AE3360F00875FE5 /* AlertPresenterProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0B5B3602AE3360F00875FE5 /* AlertPresenterProtocol.swift */; };
+		B0C26B452B0205E600290270 /* MostPopularMovies.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C26B442B0205E600290270 /* MostPopularMovies.swift */; };
+		B0C26B472B02086800290270 /* MoviesLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0C26B462B02086800290270 /* MoviesLoader.swift */; };
 		B0F94F242AE19B0A00DB2741 /* QuestionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F94F232AE19B0A00DB2741 /* QuestionFactory.swift */; };
 		B0F94F272AE19E5F00DB2741 /* QuizStepViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F94F262AE19E5F00DB2741 /* QuizStepViewModel.swift */; };
 		B0F94F292AE19E6E00DB2741 /* QuizResultsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F94F282AE19E6E00DB2741 /* QuizResultsViewModel.swift */; };
@@ -60,6 +62,8 @@
 		B0B5B35B2AE3307500875FE5 /* AlertModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertModel.swift; sourceTree = "<group>"; };
 		B0B5B35E2AE3357000875FE5 /* AlertPresenterDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPresenterDelegate.swift; sourceTree = "<group>"; };
 		B0B5B3602AE3360F00875FE5 /* AlertPresenterProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPresenterProtocol.swift; sourceTree = "<group>"; };
+		B0C26B442B0205E600290270 /* MostPopularMovies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MostPopularMovies.swift; sourceTree = "<group>"; };
+		B0C26B462B02086800290270 /* MoviesLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesLoader.swift; sourceTree = "<group>"; };
 		B0F94F232AE19B0A00DB2741 /* QuestionFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionFactory.swift; sourceTree = "<group>"; };
 		B0F94F262AE19E5F00DB2741 /* QuizStepViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizStepViewModel.swift; sourceTree = "<group>"; };
 		B0F94F282AE19E6E00DB2741 /* QuizResultsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuizResultsViewModel.swift; sourceTree = "<group>"; };
@@ -193,6 +197,7 @@
 				B0B5B3622AE33F3D00875FE5 /* QuestionServices */,
 				B07838BB2AFE7A08007B3EFD /* StatisticService */,
 				B00657F12B0195F600599322 /* NetworkClient.swift */,
+				B0C26B462B02086800290270 /* MoviesLoader.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -203,6 +208,7 @@
 				B0B5B3642AE33F8F00875FE5 /* QuizModels */,
 				B0B5B35B2AE3307500875FE5 /* AlertModel.swift */,
 				B07838B42AFC2AC4007B3EFD /* GameRecordModel.swift */,
+				B0C26B442B0205E600290270 /* MostPopularMovies.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -286,10 +292,12 @@
 				B0B5B3562AE2CE0900875FE5 /* QuestionFactoryProtocol.swift in Sources */,
 				B0B5B3582AE307E800875FE5 /* QuestionFactoryDelegate.swift in Sources */,
 				B07838B52AFC2AC4007B3EFD /* GameRecordModel.swift in Sources */,
+				B0C26B452B0205E600290270 /* MostPopularMovies.swift in Sources */,
 				B0B5B35C2AE3307500875FE5 /* AlertModel.swift in Sources */,
 				B0B5B35F2AE3357000875FE5 /* AlertPresenterDelegate.swift in Sources */,
 				B0F94F292AE19E6E00DB2741 /* QuizResultsViewModel.swift in Sources */,
 				B0F94F272AE19E5F00DB2741 /* QuizStepViewModel.swift in Sources */,
+				B0C26B472B02086800290270 /* MoviesLoader.swift in Sources */,
 				AD7AFA552836189F00399704 /* Array+Extensions.swift in Sources */,
 				B07838BA2AFE6B64007B3EFD /* StatisticServiceDelegate.swift in Sources */,
 				B00657F22B0195F700599322 /* NetworkClient.swift in Sources */,

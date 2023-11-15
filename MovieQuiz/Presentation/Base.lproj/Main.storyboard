@@ -92,20 +92,18 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="R7z-Jn-GHc">
-                                <rect key="frame" x="20" y="438" width="374" height="20"/>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="R7z-Jn-GHc">
+                                <rect key="frame" x="197" y="445" width="20" height="20"/>
                             </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" name="YP Background"/>
                         <constraints>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="whs-aI-0kn" secondAttribute="bottom" id="AQe-st-C66"/>
-                            <constraint firstItem="R7z-Jn-GHc" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="HEQ-aj-sCn"/>
-                            <constraint firstItem="R7z-Jn-GHc" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="QQJ-qx-87K"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="R7z-Jn-GHc" secondAttribute="bottom" constant="397" id="V4e-Wi-19l"/>
+                            <constraint firstItem="R7z-Jn-GHc" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="bvW-vI-99S"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="whs-aI-0kn" secondAttribute="trailing" constant="20" id="enP-Go-yrK"/>
                             <constraint firstItem="whs-aI-0kn" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="fEv-uj-3Gz"/>
-                            <constraint firstItem="R7z-Jn-GHc" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="397" id="h8z-XE-rpd"/>
                             <constraint firstItem="whs-aI-0kn" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="nxl-U0-tQd"/>
                         </constraints>
                     </view>
