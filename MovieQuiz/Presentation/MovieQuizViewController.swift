@@ -1,6 +1,9 @@
 import UIKit
 
-final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, AlertPresenterDelegate, StatisticServiceDelegate {
+final class MovieQuizViewController: UIViewController, 
+                                        QuestionFactoryDelegate,
+                                        AlertPresenterDelegate,
+                                        StatisticServiceDelegate {
     
     @IBOutlet weak private var noButton: UIButton!
     @IBOutlet weak private var yesButton: UIButton!
@@ -25,6 +28,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         yesButton.layer.cornerRadius = 15
         imageView.layer.cornerRadius = 20
         
+        activityIndicator.hidesWhenStopped = true
+        
         showLoadingIndicator()
         
         questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
@@ -33,9 +38,9 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
 
         questionFactory?.loadData()
         
-        questionFactory!.delegate = self
+        questionFactory?.delegate = self
         alertPresenter.delegate = self
-        questionFactory!.requestNextQuestion()
+        questionFactory?.requestNextQuestion()
         statisticService.delegate = self
     }
     
@@ -126,12 +131,10 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     }
     
     private func showLoadingIndicator() {
-        activityIndicator.isHidden = false // говорим, что индикатор загрузки не скрыт
         activityIndicator.startAnimating() // включаем анимацию
     }
     
     private func hideLoadingIndicator() {
-        activityIndicator.isHidden = true
         activityIndicator.stopAnimating()
     }
     
@@ -153,9 +156,13 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         }
         
         currentQuestion = question
+        
+        showLoadingIndicator()
+        
         let viewModel = convert(model: question)
         DispatchQueue.main.async { [weak self] in
-                self?.show(quiz: viewModel)
+            self?.hideLoadingIndicator()
+            self?.show(quiz: viewModel)
         }
     }
     
