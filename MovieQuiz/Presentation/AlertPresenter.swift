@@ -15,7 +15,7 @@ final class AlertPresenter: UIViewController, AlertPresenterProtocol {
             title: result.title,
             message: result.message,
             preferredStyle: .alert)
-        
+
         let action = UIAlertAction(title: result.buttonText, style: .default) { [weak self] _ in
             guard let self = self else {
                 return
@@ -23,6 +23,8 @@ final class AlertPresenter: UIViewController, AlertPresenterProtocol {
             
             self.delegate?.didReceiveAlert()
         }
+        
+        alert.view.accessibilityIdentifier = "Game results"
         
         alert.addAction(action)
         delegate?.present(alert, animated: true, completion: nil)

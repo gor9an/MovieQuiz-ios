@@ -1,9 +1,9 @@
 import UIKit
 
-final class MovieQuizViewController: UIViewController, 
+final class MovieQuizViewController: UIViewController,
                                         QuestionFactoryDelegate,
-                                        AlertPresenterDelegate,
-                                        StatisticServiceDelegate {
+                                     AlertPresenterDelegate,
+                                     StatisticServiceDelegate {
     
     @IBOutlet weak private var noButton: UIButton!
     @IBOutlet weak private var yesButton: UIButton!
@@ -34,8 +34,8 @@ final class MovieQuizViewController: UIViewController,
         
         questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
         statisticService = StatisticServiceImplementation()
-
-
+        
+        
         questionFactory?.loadData()
         
         questionFactory?.delegate = self
@@ -149,7 +149,7 @@ final class MovieQuizViewController: UIViewController,
     }
     
     // MARK: - QuestionFactoryDelegate
-
+    
     func didReceiveNextQuestion(question: QuizQuestion?) {
         guard let question else {
             return
