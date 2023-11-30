@@ -1,25 +1,25 @@
 import UIKit
 
 final class MovieQuizViewController: UIViewController,
-                                        QuestionFactoryDelegate,
+                                     QuestionFactoryDelegate,
                                      AlertPresenterDelegate,
                                      StatisticServiceDelegate {
     
-    @IBOutlet weak private var noButton: UIButton!
-    @IBOutlet weak private var yesButton: UIButton!
+    @IBOutlet weak var noButton: UIButton!
+    @IBOutlet weak var yesButton: UIButton!
     @IBOutlet weak private var imageView: UIImageView!
     @IBOutlet weak private var textLabel: UILabel!
     @IBOutlet weak var counterLabel: UILabel!
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
-    private var currentQuestionIndex = 0
     private var correctAnswers = 0
-    private let questionsAmount: Int = 10
     private var questionFactory: QuestionFactoryProtocol?
     private var alertPresenter: AlertPresenterProtocol = AlertPresenter()
-    private var currentQuestion: QuizQuestion?
+
     private var statisticService: StatisticService = StatisticServiceImplementation()
     private var accuracy: Double = UserDefaults.standard.double(forKey: "total")
+    
+    private let presenter = MovieQuizPresenter()
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -42,34 +42,22 @@ final class MovieQuizViewController: UIViewController,
         alertPresenter.delegate = self
         questionFactory?.requestNextQuestion()
         statisticService.delegate = self
+        
+        presenter.viewController = self
     }
     
     // MARK: - Actions
     // метод вызывается, когда пользователь нажимает на кнопку "Нет"
     @IBAction private func noButtonClicked(_ sender: Any) {
-        noButton.isEnabled = false
-        yesButton.isEnabled = false
-        guard let currentQuestion = currentQuestion else {
-            return
-        }
-        let givenAnswer = false
-        
-        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+        presenter.noButtonClicked()
     }
     
     @IBAction private func yesButtonClicked(_ sender: Any) {
-        noButton.isEnabled = false
-        yesButton.isEnabled = false
-        guard let currentQuestion = currentQuestion else {
-            return
-        }
-        let givenAnswer = true
-        
-        showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+        presenter.yesButtonClicked()
     }
     
     // MARK: - Private functions
-    private func showAnswerResult(isCorrect: Bool) {
+    func showAnswerResult(isCorrect: Bool) {
         imageView.layer.masksToBounds = true // даём разрешение на рисование рамки
         imageView.layer.borderWidth = 8 // толщина рамки
         imageView.layer.cornerRadius = 20 // радиус скругления углов рамки
@@ -92,11 +80,11 @@ final class MovieQuizViewController: UIViewController,
     }
     
     private func showNextQuestionOrResults() {
-        if currentQuestionIndex == questionsAmount - 1 {
+        if presenter.isLastQuestion() {
             statisticService.store(correct: correctAnswers, total: statisticService.bestGame.correct)
             
             let text = """
-Вы ответили на \(correctAnswers) из \(questionsAmount)\n
+Вы ответили на \(correctAnswers) из \(presenter.questionsAmount)\n
 Количество игр: \(statisticService.gamesCount)\n
 Рекорд: \(statisticService.bestGame.correct) (\(statisticService.bestGame.date.dateTimeString))\n
 Средняя точность: \(String(format: "%.2f", statisticService.totalAccuracy))%
@@ -109,32 +97,24 @@ final class MovieQuizViewController: UIViewController,
             alertPresenter.requestAlert(quiz: viewModel)
             
         } else { // 2
-            currentQuestionIndex += 1
+            presenter.switchToNextQuestion()
             
             self.questionFactory!.requestNextQuestion()
         }
     }
     
-    private func convert(model: QuizQuestion) -> QuizStepViewModel {
-        let questionStep = QuizStepViewModel(
-            image: UIImage(data: model.image) ?? UIImage(),
-            question: model.text,
-            questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)")
-        return questionStep
-    }
-    
     // приватный метод вывода на экран вопроса, который принимает на вход вью модель вопроса и ничего не возвращает
-    private func show(quiz step: QuizStepViewModel) {
+    func show(quiz step: QuizStepViewModel) {
         imageView.image = step.image
         textLabel.text = step.question
         counterLabel.text = step.questionNumber
     }
     
-    private func showLoadingIndicator() {
+    func showLoadingIndicator() {
         activityIndicator.startAnimating() // включаем анимацию
     }
     
-    private func hideLoadingIndicator() {
+    func hideLoadingIndicator() {
         activityIndicator.stopAnimating()
     }
     
@@ -146,24 +126,15 @@ final class MovieQuizViewController: UIViewController,
             message: "Данные из сети не загружены",
             buttonText: "Попробовать ещё раз")
         alertPresenter.requestAlert(quiz: errorAlert)
+        
+        self.presenter.resetQuestionIndex()
+        self.correctAnswers = 0
     }
     
     // MARK: - QuestionFactoryDelegate
     
     func didReceiveNextQuestion(question: QuizQuestion?) {
-        guard let question else {
-            return
-        }
-        
-        currentQuestion = question
-        
-        showLoadingIndicator()
-        
-        let viewModel = convert(model: question)
-        DispatchQueue.main.async { [weak self] in
-            self?.hideLoadingIndicator()
-            self?.show(quiz: viewModel)
-        }
+        presenter.didReceiveNextQuestion(question: question)
     }
     
     func didFailToLoadData(with error: Error) {
@@ -177,15 +148,13 @@ final class MovieQuizViewController: UIViewController,
     
     // MARK: - AlertPresenterDelegate
     func didReceiveAlert() {
-        currentQuestionIndex = 0
-        correctAnswers = 0
-        
+        presenter.resetQuestionIndex()
         questionFactory!.requestNextQuestion()
     }
     
     // MARK: - StatisticServiceDelegate
     func didReceiveStatistic() -> Double {
-        accuracy += Double(correctAnswers)/Double(questionsAmount)*100
+        accuracy += Double(correctAnswers)/Double(presenter.questionsAmount) * 100
         UserDefaults.standard.set(accuracy, forKey: "total")
         
         return UserDefaults.standard.double(forKey: "total") / Double(statisticService.gamesCount)
