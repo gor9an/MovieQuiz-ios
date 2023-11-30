@@ -1,6 +1,7 @@
 import UIKit
 
 final class MovieQuizViewController: UIViewController,
+                                     MovieQuizViewControllerProtocol,
                                      AlertPresenterDelegate {
     
     @IBOutlet weak private var noButton: UIButton!

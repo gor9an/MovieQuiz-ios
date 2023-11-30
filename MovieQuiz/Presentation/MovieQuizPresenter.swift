@@ -20,9 +20,9 @@ final class MovieQuizPresenter: QuestionFactoryDelegate,
     var currentQuestion: QuizQuestion?
     var questionFactory: QuestionFactoryProtocol?
     
-    weak var viewController: MovieQuizViewController?
+    weak var viewController: MovieQuizViewControllerProtocol?
     
-    init(viewController: MovieQuizViewController) {
+    init(viewController: MovieQuizViewControllerProtocol) {
         self.viewController = viewController
         
         statisticService = StatisticServiceImplementation()
@@ -58,7 +58,6 @@ final class MovieQuizPresenter: QuestionFactoryDelegate,
     
     
     private func didAnswer(isYes: Bool) {
-        
         guard let currentQuestion = currentQuestion else {
             return
         }
