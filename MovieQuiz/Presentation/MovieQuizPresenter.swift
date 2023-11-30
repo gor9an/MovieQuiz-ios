@@ -102,9 +102,9 @@ final class MovieQuizPresenter: QuestionFactoryDelegate,
             statisticService.store(correct: correctAnswers, total: statisticService.bestGame.correct)
             
             let text = """
-Вы ответили на \(correctAnswers) из \(self.questionsAmount)\n
-Количество игр: \(statisticService.gamesCount)\n
-Рекорд: \(statisticService.bestGame.correct) (\(statisticService.bestGame.date.dateTimeString))\n
+Ваш результат: \(correctAnswers)/\(self.questionsAmount)
+Количество сыгранных квизов: \(statisticService.gamesCount)
+Рекорд: \(statisticService.bestGame.correct) (\(statisticService.bestGame.date.dateTimeString))
 Средняя точность: \(String(format: "%.2f", statisticService.totalAccuracy))%
 """
             let viewModel = AlertModel(
