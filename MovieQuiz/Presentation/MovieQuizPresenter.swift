@@ -7,21 +7,15 @@
 
 import UIKit
 
-final class MovieQuizPresenter: QuestionFactoryDelegate {
-    func didLoadDataFromServer() {
-        viewController?.hideLoadingIndicator()
-        questionFactory?.requestNextQuestion()
-    }
-    
-    func didFailToLoadData(with error: Error) {
-        let message = error.localizedDescription
-        viewController?.showNetworkError(message: message)
-    }
-    
+final class MovieQuizPresenter: QuestionFactoryDelegate,
+                                StatisticServiceDelegate {
     let questionsAmount: Int = 10
     private var currentQuestionIndex: Int = 0
     var correctAnswers = 0
-    var statisticService: StatisticService = StatisticServiceImplementation()
+    
+    private var accuracy: Double = 0.0
+    
+    var statisticService: StatisticService!
     
     var currentQuestion: QuizQuestion?
     var questionFactory: QuestionFactoryProtocol?
@@ -30,6 +24,11 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     
     init(viewController: MovieQuizViewController) {
         self.viewController = viewController
+        
+        statisticService = StatisticServiceImplementation()
+        statisticService.delegate = self
+        
+        accuracy = UserDefaults.standard.double(forKey: "total")
         
         questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
         questionFactory?.loadData()
@@ -44,9 +43,21 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         didAnswer(isYes: false)
     }
     
+    func proceedWithAnswer(isCorrect: Bool) {
+        viewController?.highlightImageBorder(isCorrectAnswer: isCorrect)
+        
+        didAnswer(isCorrectAnswer: isCorrect)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
+            self.proceedToNextQuestionOrResults()
+            
+            self.viewController?.hideHighlightImageBorder()
+        }
+    }
+    
+    
     private func didAnswer(isYes: Bool) {
-        viewController?.noButton.isEnabled = false
-        viewController?.yesButton.isEnabled = false
         
         guard let currentQuestion = currentQuestion else {
             return
@@ -54,16 +65,13 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         
         let givenAnswer = isYes
         
-        viewController?.showAnswerResult(isCorrect: givenAnswer == currentQuestion.correctAnswer)
+        proceedWithAnswer(isCorrect: givenAnswer == currentQuestion.correctAnswer)
     }
     
     func didAnswer(isCorrectAnswer: Bool) {
         if isCorrectAnswer {
-            viewController?.imageView.layer.borderColor = UIColor.ypGreen.cgColor
             correctAnswers += 1
-        } else {
-            viewController?.imageView.layer.borderColor = UIColor.ypRed.cgColor
-        }
+        } 
     }
     
     func convert(model: QuizQuestion) -> QuizStepViewModel {
@@ -89,23 +97,8 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         currentQuestionIndex += 1
     }
     
-    func didReceiveNextQuestion(question: QuizQuestion?) {
-        guard let question else {
-            return
-        }
-        
-        currentQuestion = question
-        
-        viewController?.showLoadingIndicator()
-        
-        let viewModel = convert(model: question)
-        DispatchQueue.main.async { [weak self] in
-            self?.viewController?.hideLoadingIndicator()
-            self?.viewController?.show(quiz: viewModel)
-        }
-    }
     
-    func showNextQuestionOrResults() {
+    func proceedToNextQuestionOrResults() {
         if self.isLastQuestion() {
             statisticService.store(correct: correctAnswers, total: statisticService.bestGame.correct)
             
@@ -130,4 +123,37 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     }
     
     // MARK: - QuestionFactoryDelegate
+    func didReceiveNextQuestion(question: QuizQuestion?) {
+        guard let question else {
+            return
+        }
+        
+        currentQuestion = question
+        
+        viewController?.showLoadingIndicator()
+        
+        let viewModel = convert(model: question)
+        DispatchQueue.main.async { [weak self] in
+            self?.viewController?.hideLoadingIndicator()
+            self?.viewController?.show(quiz: viewModel)
+        }
+    }
+    
+    func didLoadDataFromServer() {
+        viewController?.hideLoadingIndicator()
+        questionFactory?.requestNextQuestion()
+    }
+    
+    func didFailToLoadData(with error: Error) {
+        let message = error.localizedDescription
+        viewController?.showNetworkError(message: message)
+    }
+    
+    // MARK: - StatisticServiceDelegate
+    func didReceiveStatistic() -> Double {
+        accuracy += Double(correctAnswers)/Double(questionsAmount) * 100
+        UserDefaults.standard.set(accuracy, forKey: "total")
+        
+        return UserDefaults.standard.double(forKey: "total") / Double(statisticService.gamesCount)
+    }
 }

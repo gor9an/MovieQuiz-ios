@@ -1,20 +1,16 @@
 import UIKit
 
 final class MovieQuizViewController: UIViewController,
-                                     AlertPresenterDelegate,
-                                     StatisticServiceDelegate {
+                                     AlertPresenterDelegate {
     
-    @IBOutlet weak var noButton: UIButton!
-    @IBOutlet weak var yesButton: UIButton!
-    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak private var noButton: UIButton!
+    @IBOutlet weak private var yesButton: UIButton!
+    @IBOutlet weak private var imageView: UIImageView!
     @IBOutlet weak private var textLabel: UILabel!
-    @IBOutlet weak var counterLabel: UILabel!
+    @IBOutlet weak private var counterLabel: UILabel!
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     var alertPresenter: AlertPresenterProtocol = AlertPresenter()
-
-    var statisticService: StatisticService = StatisticServiceImplementation()
-    private var accuracy: Double = 0.0
     
     private var presenter: MovieQuizPresenter!
     
@@ -34,9 +30,7 @@ final class MovieQuizViewController: UIViewController,
         showLoadingIndicator()
         
         alertPresenter.delegate = self
-        statisticService.delegate = self
         
-        accuracy = UserDefaults.standard.double(forKey: "total")
     }
     
     // MARK: - Actions
@@ -50,25 +44,18 @@ final class MovieQuizViewController: UIViewController,
     }
     
     // MARK: - Private functions
-    func showAnswerResult(isCorrect: Bool) {
-        imageView.layer.masksToBounds = true // даём разрешение на рисование рамки
-        imageView.layer.borderWidth = 8 // толщина рамки
-        imageView.layer.cornerRadius = 20 // радиус скругления углов рамки
-        
-        presenter.didAnswer(isCorrectAnswer: isCorrect)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            guard let self = self else { return }
-            self.presenter.statisticService = self.statisticService
-            
-            self.presenter.showNextQuestionOrResults()
-            
-            self.imageView.layer.borderWidth = 0 // толщина рамки
-            
-            self.noButton.isEnabled = true
-            self.yesButton.isEnabled = true
-
-        }
+    func highlightImageBorder(isCorrectAnswer: Bool) {
+        imageView.layer.masksToBounds = true
+        imageView.layer.borderWidth = 8
+        imageView.layer.borderColor = isCorrectAnswer ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
+        noButton.isEnabled = false
+        yesButton.isEnabled = false
+    }
+    
+    func hideHighlightImageBorder() {
+        imageView.layer.borderWidth = 0 // толщина рамки
+        noButton.isEnabled = true
+        yesButton.isEnabled = true
     }
     
     // приватный метод вывода на экран вопроса, который принимает на вход вью модель вопроса и ничего не возвращает
@@ -102,13 +89,5 @@ final class MovieQuizViewController: UIViewController,
     func didReceiveAlert() {
         presenter.restartGame()
         presenter.questionFactory!.requestNextQuestion()
-    }
-    
-    // MARK: - StatisticServiceDelegate
-    func didReceiveStatistic() -> Double {
-        accuracy += Double(presenter.correctAnswers)/Double(presenter.questionsAmount) * 100
-        UserDefaults.standard.set(accuracy, forKey: "total")
-        
-        return UserDefaults.standard.double(forKey: "total") / Double(statisticService.gamesCount)
     }
 }
