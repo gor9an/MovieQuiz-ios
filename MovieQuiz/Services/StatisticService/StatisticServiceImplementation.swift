@@ -19,7 +19,7 @@ final class StatisticServiceImplementation: StatisticService {
     var gamesCount: Int {
         get { 
             guard let data = userDefaults.data(forKey: Keys.gamesCount.rawValue),
-                let count = try? JSONDecoder().decode(Int.self, from: data) else {
+                  let count = try? JSONDecoder().decode(Int.self, from: data) else {
                 return 0
             }
             
@@ -27,22 +27,22 @@ final class StatisticServiceImplementation: StatisticService {
         }
         set {
             guard let data = try? JSONEncoder().encode(newValue) else {
-            print("Невозможно сохранить количество игр")
-            return
-        }
-        
-        userDefaults.set(data, forKey: Keys.gamesCount.rawValue) }
+                print("Невозможно сохранить количество игр")
+                return
+            }
+            
+            userDefaults.set(data, forKey: Keys.gamesCount.rawValue) }
     }
     var bestGame: GameRecord {
         get {
             guard let data = userDefaults.data(forKey: Keys.bestGame.rawValue),
-                let record = try? JSONDecoder().decode(GameRecord.self, from: data) else {
+                  let record = try? JSONDecoder().decode(GameRecord.self, from: data) else {
                 return .init(correct: 0, total: 0, date: Date())
             }
             
             return record
         }
-
+        
         set {
             guard let data = try? JSONEncoder().encode(newValue) else {
                 print("Невозможно сохранить результат")
