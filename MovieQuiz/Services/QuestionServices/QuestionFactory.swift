@@ -9,6 +9,13 @@ import Foundation
 
 final class QuestionFactory: QuestionFactoryProtocol {
     
+    enum QuestionsLoadingError: Error  {
+        case clientError(String)
+        case emptyList
+        case posterLoadingError(Error)
+        case loadingError(Error)
+    }
+    
     private let moviesLoader: MoviesLoading
     weak var delegate: QuestionFactoryDelegate?
     private var movies: [MostPopularMovie] = []
@@ -24,8 +31,18 @@ final class QuestionFactory: QuestionFactoryProtocol {
                 guard let self = self else { return }
                 switch result {
                 case .success(let mostPopularMovies):
-                    self.movies = mostPopularMovies.items // сохраняем фильм в нашу новую переменную
-                    self.delegate?.didLoadDataFromServer() // сообщаем, что данные загрузились
+                    if !mostPopularMovies.errorMessage.isEmpty {
+                        self.delegate?.didFailToLoadData(
+                            with: QuestionsLoadingError.clientError(mostPopularMovies.errorMessage)
+                        )
+                    }
+                    else if mostPopularMovies.items.isEmpty {
+                        self.delegate?.didFailToLoadData(with: QuestionsLoadingError.emptyList)
+                    }
+                    else {
+                        self.movies = mostPopularMovies.items
+                        self.delegate?.didLoadDataFromServer()
+                    }
                 case .failure(let error):
                     self.delegate?.didFailToLoadData(with: error) // сообщаем об ошибке нашему MovieQuizViewController
                 }
